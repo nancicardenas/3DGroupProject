@@ -6,15 +6,26 @@ public class NewBehaviourScript : MonoBehaviour
 {
     public Rigidbody rb;
     public Transform Camera;
+    public Vector3 jump;
 
     public float speed = 6f;
+    public float jumpForce = 5f;
+
     public float turnSmoothTime = 0.1f;
     float turnSmoothVelocity;
+
+    public bool isGrounded;
 
     // Start is called before the first frame update
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
+        jump = new Vector3(0f, 2f, 0f);
+    }
 
+    private void OnCollisionStay()
+    {
+        isGrounded = true;
     }
 
     // Update is called once per frame
@@ -23,6 +34,7 @@ public class NewBehaviourScript : MonoBehaviour
         //get input from player 
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
+
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
         if(direction.magnitude >= 0.1f)
@@ -34,7 +46,7 @@ public class NewBehaviourScript : MonoBehaviour
 
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
 
-
+            //moves the player 
             Vector3 Velocity = moveDir.normalized * speed;
 
           
@@ -43,14 +55,15 @@ public class NewBehaviourScript : MonoBehaviour
             rb.velocity = Velocity;
         }
 
-        //if(Input.GetKey(KeyCode.W) && grounded)
-        //{
-        //    Jump()
-        //}
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            rb.AddForce(jump * jumpForce, ForceMode.Impulse);
+            isGrounded = false;
+        }
     }
 
-    void Jump()
-    {
-
-    }
+    //void Jump()
+    //{
+       
+    //}
 }
