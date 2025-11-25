@@ -22,4 +22,12 @@ Ryan D. - Art/ Animation
 
 # Example of current gameplay:
 (video/ gif example of gameplay)
+<div>
+    <a href="https://www.loom.com/share/a80e2aba8fa1475980fb766a962e68c7">
+      <p>CS583 - 3D Game Demo - Watch Video</p>
+    </a>
+    <a href="https://www.loom.com/share/a80e2aba8fa1475980fb766a962e68c7">
+      <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/a80e2aba8fa1475980fb766a962e68c7-18b61aee2a2a10d3-full-play.gif#t=0.1">
+    </a>
+  </div>
 
