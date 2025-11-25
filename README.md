@@ -1,7 +1,7 @@
 # 3DGroupProject
 
 # Game Name:
-??? 
+Survival in Wilderness 
 
 # Names of group members: 
 Rita Yousif, Nanci Cardenas, Ryan Dong, Aiden Suarez
