@@ -22,4 +22,100 @@ Ryan D. - Art/ Animation
 
 # Example of current gameplay:
 (video/ gif example of gameplay)
+<div>
+    <a href="https://www.loom.com/share/a80e2aba8fa1475980fb766a962e68c7">
+      <p>CS583 - 3D Game Demo - Watch Video</p>
+    </a>
+    <a href="https://www.loom.com/share/a80e2aba8fa1475980fb766a962e68c7">
+      <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/a80e2aba8fa1475980fb766a962e68c7-18b61aee2a2a10d3-full-play.gif#t=0.1">
+    </a>
+  </div>
+
+# Code:
+Enemy movement
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+
+public class EnemyPathing : MonoBehaviour
+{
+    public NavMeshAgent navMesh;
+
+    public Transform player;
+    public Transform PointA;
+    public Transform PointB;
+
+    public LayerMask isGround, playerlocation;
+    public Vector3 walkPoint;
+    bool destination;
+    public float walkRange;
+
+    //__Attacking vals__
+    public float attackCooldown;
+    bool attacking;
+    
+    //__States___
+    public float sightRange, attackRange;
+    public bool playerInSight, playerInAttackRange;
+
+    // Patrol helper
+    private Transform currentTarget;
+
+    private void Awake()
+    {
+        player = GameObject.Find("Player").transform;
+        navMesh = GetComponent<NavMeshAgent>();
+
+        // Start patrol at PointA
+        currentTarget = PointA;
+        navMesh.SetDestination(currentTarget.position);
+    }
+
+    private void Update()
+    {
+        playerInSight = Physics.CheckSphere(transform.position, sightRange, playerlocation);
+        playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, playerlocation);
+
+        if (!playerInSight && !playerInAttackRange) Patrolling();
+        if (playerInSight && !playerInAttackRange) ChasePlayer();
+        if (playerInSight && playerInAttackRange) AttackingPlayer();
+    }
+
+    private void Patrolling()
+    {
+        // If close to current target, switch to the other point
+        if (!navMesh.pathPending && navMesh.remainingDistance < 0.5f)
+        {
+            currentTarget = (currentTarget == PointA) ? PointB : PointA;
+            navMesh.SetDestination(currentTarget.position);
+        }
+    }
+
+    private void ChasePlayer()
+    {
+        navMesh.SetDestination(player.position);
+    }
+
+    private void AttackingPlayer()
+    {
+        // Stop moving when attacking
+        navMesh.SetDestination(transform.position);
+
+        if (!attacking)
+        {
+            attacking = true;
+            // TODO: Insert attack logic here (damage, animation, etc.)
+            Invoke(nameof(ResetAttack), attackCooldown);
+        }
+    }
+
+    private void ResetAttack()
+    {
+        attacking = false;
+    }
+}
+
+
+
 
