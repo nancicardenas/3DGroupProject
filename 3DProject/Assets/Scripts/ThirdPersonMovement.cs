@@ -14,19 +14,26 @@ public class NewBehaviourScript : MonoBehaviour
     public float turnSmoothTime = 0.1f;
     float turnSmoothVelocity;
 
-    public bool isGrounded;
+    private GroundController _groundController;
+    public bool _jumpTriggered;
 
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        //rb = GetComponent<Rigidbody>();
         jump = new Vector3(0f, 2f, 0f);
     }
 
-    private void OnCollisionStay()
+    private void Awake()
     {
-        isGrounded = true;
+        rb = GetComponent<Rigidbody>();
+        _groundController = GetComponent<GroundController>();
     }
+
+    //private void OnCollisionStay()
+    //{
+    //    _jumpTriggered = true;
+    //}
 
     // Update is called once per frame
     void Update()
@@ -55,15 +62,17 @@ public class NewBehaviourScript : MonoBehaviour
             rb.velocity = Velocity;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && _groundController.IsGrounded)
         {
-            rb.AddForce(jump * jumpForce, ForceMode.Impulse);
-            isGrounded = false;
+            _jumpTriggered = true;
+            Jump();
         }
     }
 
-    //void Jump()
-    //{
-       
-    //}
+    public void Jump()
+    {
+        rb.AddForce(jump * jumpForce, ForceMode.Impulse);
+        //set to false after jumping
+        _jumpTriggered = false;
+    }
 }
