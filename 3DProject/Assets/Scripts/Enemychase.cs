@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,7 +8,10 @@ public class Enemychase : MonoBehaviour
 {
     public Transform pointA;
     public Transform pointB;
-    public float detectionRange = 5f;
+    public float detectionRange = 8f;
+    public float attackRange = 2f;
+    public float attackCooldown = 1.5f;
+    public bool coolDown = false;
 
     private NavMeshAgent agent;
     private Transform player;
@@ -26,11 +30,20 @@ public class Enemychase : MonoBehaviour
     {
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        if (distanceToPlayer < detectionRange)
-        {
-            // Chase player
+        if (distanceToPlayer < detectionRange){
+            // Chase Player
             chasing = true;
-            agent.SetDestination(player.position);
+
+            if (distanceToPlayer <= attackRange)
+            {
+                Attack();
+            }
+            else
+            {
+                // Chase player
+                agent.isStopped = false;
+                agent.SetDestination(player.position);
+            }
         }
         else
         {
@@ -38,6 +51,7 @@ public class Enemychase : MonoBehaviour
             if (chasing)
             {
                 chasing = false;
+                agent.isStopped = false;
                 agent.SetDestination(target.position);
             }
 
@@ -46,6 +60,22 @@ public class Enemychase : MonoBehaviour
                 target = target == pointA ? pointB : pointA;
                 agent.SetDestination(target.position);
             }
+        }
+    }
+
+    void Attack(){
+
+        if (!coolDown)
+        {
+            coolDown = true;
+            // Trigger animation or damage logic here
+            // Stop moving
+            agent.isStopped = true;
+
+            // Face the player
+            Vector3 lookDir = (player.position - transform.position).normalized;
+            lookDir.y = 0; // keep rotation flat
+            transform.forward = lookDir;
         }
     }
 }
